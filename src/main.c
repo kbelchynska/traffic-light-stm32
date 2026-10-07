@@ -1,7 +1,3 @@
-/*
- * main.c - лише каркас: ініціалізація ядра й тактування та виклик
- * прикладного шару. Логіки блимання тут немає - вона в app.c.
- */
 #include "stm32f1xx_hal.h"
 #include "app.h"
 
@@ -10,18 +6,17 @@ static void Error_Handler(void);
 
 int main(void)
 {
-    HAL_Init();           // SysTick на 1 мс, базова ініціалізація HAL
-    SystemClock_Config(); // HSE 8 МГц -> PLL x9 -> SYSCLK 72 МГц
+    HAL_Init();
+    SystemClock_Config();
 
-    setup(); // один раз
+    setup();
 
     while (1)
     {
-        loop(); // нескінченно, як в Arduino Framework
+        loop();
     }
 }
 
-// HSE 8 МГц (кварц на платі) -> PLL x9 -> 72 МГц; APB1 = 36 МГц, APB2 = 72 МГц
 static void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef osc = {0};
@@ -42,7 +37,7 @@ static void SystemClock_Config(void)
                     RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
     clk.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     clk.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    clk.APB1CLKDivider = RCC_HCLK_DIV2; // APB1 максимум 36 МГц
+    clk.APB1CLKDivider = RCC_HCLK_DIV2;
     clk.APB2CLKDivider = RCC_HCLK_DIV1;
     if (HAL_RCC_ClockConfig(&clk, FLASH_LATENCY_2) != HAL_OK)
     {
@@ -50,7 +45,6 @@ static void SystemClock_Config(void)
     }
 }
 
-// Без цього обробника HAL_GetTick() не зростає і HAL_Delay() зависає назавжди
 void SysTick_Handler(void)
 {
     HAL_IncTick();
